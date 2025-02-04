@@ -134,7 +134,7 @@ def main():
     bit_size_analysis = False
     smart_analysis = True
     summary_only = False
-    bit_size_desired_ci = 1e-9
+    bit_size_desired_ci = 2e-10
     measurements_filename = "measurements.csv"
     skip_sanity = False
     hamming_weight_analysis = False
@@ -1828,8 +1828,7 @@ class Analysis(object):
         """Wrights summary to the report.txt"""
         all_sign_test_values = list(self._bit_size_sign_test.values())
         all_wilcoxon_values = list(self._bit_size_wilcoxon_test.values())
-        total_non_max_data = sum(self._k_sizes[i] for i in self._k_sizes
-                                 if i != max(self._k_sizes.keys()))
+        total_bit_size_data = sum(self._k_sizes[i] for i in self._k_sizes)
         with open(join(self.output, "analysis_results/report.txt"), "w") as fp:
             fp.write(
                 "tlsfuzzer analyse.py version {0} bit size analysis\n\n"
@@ -1853,10 +1852,10 @@ class Analysis(object):
                 "Used {0:,} ({2:.2%}) out of {1:,} available data "
                     .format(
                         self._total_bit_size_data_used,
-                        total_non_max_data,
-                        self._total_bit_size_data_used / total_non_max_data
+                        total_bit_size_data,
+                        self._total_bit_size_data_used / total_bit_size_data
                     ) +
-                "observations for results.\n" +
+                "observations for the results.\n" +
                 verdict + "\n\n" + ("-" * 88) + "\n" +
                 "| size | Sign test | Wilcoxon test " +
                 "|    {0}    |    {1}   |\n"
